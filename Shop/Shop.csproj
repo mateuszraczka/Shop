@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\Images\HP-17-CN2063CL.jpg" />
+    <None Include="wwwroot\Images\HP-OMEN-16-K0750NW.jpg" />
+    <None Include="wwwroot\Images\Huawei-Matebook-D15.jpg" />
+  </ItemGroup>
+
+</Project>

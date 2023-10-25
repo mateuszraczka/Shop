@@ -1,0 +1,16 @@
+﻿@model Product;
+
+<div class="col-md-4">
+    <div class="card mb-4 box-shadow product-card">
+        <a asp-action="Details" asp-controller="Product" asp-route-id="@Model.ProductId">
+            <img class="card-img-top d-block mx-auto ratio-16x9" src="@Model.ImageUrl" alt="@Model.Name" style="height: 300px;">
+        </a>
+        <div class="card-body">
+            <h3>@Model.Name</h3>
+            <p class="card-text">@Model.Description</p>
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted">@String.Format("{0:C}", Model.Price)</span>
+            </div>
+        </div>
+    </div>
+</div>

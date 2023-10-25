@@ -1,0 +1,16 @@
+﻿@model Product;
+
+<tr>
+    <td>
+        <img src="@Model.ImageUrl" alt="@Model.Name" class="img-thumbnail" style="max-height: 100px; max-width: 100px;">
+    </td>
+    <td>@Model.ProductId</td>
+    <td>@Model.Name</td>
+    <td>@String.Format("{0:C}", Model.Price)</td>
+    <td>@Model.StockQuantity</td>
+    <td>
+        <a asp-action="Details" asp-controller="Product" asp-route-id="@Model.ProductId" class="btn btn-outline-secondary btn-sm">Preview</a>
+        <a asp-action="Edit" asp-route-id="@Model.ProductId" class="btn btn-outline-secondary btn-sm">Edit</a>
+        <button class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#DeleteProductModal-@Model.ProductId">Delete</button>
+    </td>
+</tr>
