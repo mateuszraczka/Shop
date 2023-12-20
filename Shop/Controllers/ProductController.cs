@@ -1,22 +1,95 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shop.Models;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using System.Globalization;
 
 namespace Shop
 {
     public class ProductController : Controller
     {
         private readonly IProductServices _productServices;
+        private readonly IWebHostEnvironment _environment;
 
-        public ProductController(IProductServices productService)
+
+        public ProductController(IProductServices productService, IWebHostEnvironment environment)
         {
-            _productServices = productService; // Implement products service for CRUD operations from database
+            _productServices = productService;
+            _environment = environment;
         }
 
         // GET: ProductController
         public ActionResult Index()
         {
-            return View();
+            List<Product> products = new();
+
+            try
+            {
+                products = _productServices.GetProducts();
+
+                // After deleting, show message
+                if (TempData.TryGetValue("DeleteConfirmation", out var deleteConfirmationMessage))
+                {
+                    ViewBag.DeleteConfirmation = deleteConfirmationMessage.ToString();
+                }
+                else
+                {
+                    ViewBag.DeleteConfirmation = null; // No message available
+                }
+            }
+            catch (Exception e)
+            {
+                // Log the exception or handle it appropriately
+                Console.WriteLine(e);
+            }
+
+            return View(products);
+        }
+
+        // GET: ProductController
+        public ActionResult Admin()
+        {
+            List<Product> products = new();
+
+            try
+            {
+                products = _productServices.GetProducts();
+
+                // After deleting, show message
+                if (TempData.TryGetValue("DeleteConfirmation", out var deleteConfirmationMessage))
+                {
+                    ViewBag.DeleteConfirmation = deleteConfirmationMessage.ToString();
+                }
+                else
+                {
+                    ViewBag.DeleteConfirmation = null; // No message available
+                }
+            }
+            catch (Exception e)
+            {
+                // Log the exception or handle it appropriately
+                Console.WriteLine(e);
+            }
+
+            return View("Index",products);
+        }
+
+        // GET: ProductController
+        public ActionResult Home()
+        {
+            List<Product> products = new();
+
+            try
+            {
+                products = _productServices.GetProducts();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            return View("Index",products);
         }
 
         // GET: ProductController/Details/5
@@ -42,57 +115,108 @@ namespace Shop
             return View();
         }
 
+        private bool ValidateImageFile(IFormFile imageFile, out byte[] imageData)
+        {
+            imageData = null;
+
+            if (imageFile == null || imageFile.Length == 0)
+            {
+                ViewBag.Message = "Please upload an image file.";
+                return false;
+            }
+
+            // Check file extension
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+            var fileExtension = Path.GetExtension(imageFile.FileName).ToLowerInvariant();
+            if (!allowedExtensions.Contains(fileExtension))
+            {
+                ViewBag.Message = "Invalid file type. Only JPG, JPEG, PNG, and GIF files are allowed.";
+                return false;
+            }
+
+            // Check content type
+            var allowedContentTypes = new[] { "image/jpeg", "image/png", "image/gif" };
+            if (!allowedContentTypes.Contains(imageFile.ContentType.ToLowerInvariant()))
+            {
+                ViewBag.Message = "Invalid content type. Only JPG, JPEG, PNG, and GIF files are allowed.";
+                return false;
+            }
+
+            // Convert the image file to byte array
+            using (var memoryStream = new MemoryStream())
+            {
+                imageFile.CopyTo(memoryStream);
+                imageData = memoryStream.ToArray();
+            }
+
+            return true;
+        }
+
         // POST: ProductController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public IActionResult Create(Product product, IFormFile imageFile)
         {
             try
             {
-                return RedirectToAction("Index", "Admin");
+                if (ValidateImageFile(imageFile, out var imageData))
+                {
+                    product.ImageData = imageData;
+                    _productServices.CreateProduct(product);
+                    return RedirectToAction("Index", "Admin");
+                }
+                else
+                {
+                    ViewBag.Message = "Invalid image file. Please upload a valid JPG, JPEG, PNG, or GIF file.";
+                    return View(product);
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                return RedirectToAction("Index", "Admin");
+                ViewBag.Message = $"Error creating product: {ex.Message}";
+                return View(product);
             }
         }
+
 
         // GET: ProductController/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            Product productToEdit = _productServices.GetProductById(id);
+            return View(productToEdit);
         }
 
         // POST: ProductController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-
-
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id)
+        public IActionResult Edit(int id, Product product, IFormFile imageFile)
         {
             try
             {
-                bool deletionSuccessful = _productServices.DeleteProduct(id);
-
-                if (deletionSuccessful)
+                // Check if a new image is provided
+                if (imageFile != null && imageFile.Length > 0)
                 {
-                    TempData["DeleteConfirmation"] = "Product deleted successfully.";
+                    // Validate and update the image
+                    if (ValidateImageFile(imageFile, out var imageData))
+                    {
+                        product.ImageData = imageData;
+                    }
+                    else
+                    {
+                        ViewBag.Message = "Invalid image file. Please upload a valid JPG, JPEG, PNG, or GIF file.";
+                        return View(product);
+                    }
                 }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                TempData["DeleteConfirmation"] = "An error occurred while deleting the product.";
-            }
 
-            return RedirectToAction("Index", "Admin");
+                _productServices.EditProduct(id, product);
+
+                return RedirectToAction("Index", "Admin");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Message = $"Error editing product: {ex.Message}";
+                return View(product);
+            }
         }
     }
 }

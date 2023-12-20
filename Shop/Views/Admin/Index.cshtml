@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Shop.Models.Product>
+﻿@model List<Product>
 
 @{
     ViewData["Title"] = "Admin Panel";
@@ -12,11 +12,21 @@
         <a asp-action="Create" asp-controller="Product" class="btn btn-primary">Create New Product</a>
     </p>
 
-    @if (!string.IsNullOrEmpty(ViewBag.DeleteConfirmation))
+    @if (ViewBag.DeleteConfirmation == true || ViewBag.DeleteConfirmation == false)
     {
-        <div class="alert alert-success">
-            @ViewBag.DeleteConfirmation
-        </div>
+        @if (ViewBag.DeleteConfirmation)
+        {
+            <div class="alert alert-success">
+                Product has been deleted successfuly.
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-warning">
+                Error: Product hasn't been deleted successfuly.
+            </div>
+        }
+
         <script>
             setTimeout(function () {
                 $(".alert").fadeOut(1000);
@@ -47,29 +57,5 @@
 </div>
 
 
-@foreach (var product in Model)
-{
-    <div class="modal fade" id="DeleteProductModal-@product.ProductId" tabindex="-1" role="dialog" aria-labelledby="DeleteProductModal" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Delete Product</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p class="text-danger">Are you sure you want to delete this product?</p>
-                </div>
-                <div class="modal-footer">
-                    <form method="post" action="@Url.Action("Delete", "Product", new { id = product.ProductId })">
-                        @Html.AntiForgeryToken()
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                </div>
-            </div>
-        </div>
-    </div>
-}
+<partial name="_ProductDeletePartial"/>
 

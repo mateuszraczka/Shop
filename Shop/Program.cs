@@ -1,3 +1,8 @@
+using Microsoft.EntityFrameworkCore;
+using Shop.Models.Contexts;
+using Microsoft.AspNetCore.Identity;
+using Shop.Areas.Identity.Data;
+
 namespace Shop
 {
     public class Program
@@ -19,8 +24,11 @@ namespace Shop
             builder.Services.AddScoped<IProductEditService, ProductEditService>();
             builder.Services.AddScoped<IProductDeleteService, ProductDeleteService>();
             builder.Services.AddScoped<IProductCreateService, ProductCreateService>();
-
-
+            builder.Services.AddDbContext<ProductsDbContext>(options=> options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection")));
+            builder.Services.AddDefaultIdentity<Admin>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<IdentityDbContext>();
+            builder.Services.AddDbContext<CategoriesDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection")));
+            builder.Services.AddDbContext<OrdersDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection")));
+            builder.Services.AddDbContext<IdentityDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection")));
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -35,6 +43,7 @@ namespace Shop
             app.UseStaticFiles();
 
             app.UseRouting();
+                        app.UseAuthentication();;
 
             app.UseAuthorization();
 
@@ -46,6 +55,7 @@ namespace Shop
                     name: "productDetails",
                     pattern: "Product/Details/{id}",
                     defaults: new { controller = "Product", action = "Details" });
+            app.MapRazorPages();
 
             app.Run();
         }

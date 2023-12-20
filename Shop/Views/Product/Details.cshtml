@@ -7,8 +7,15 @@
 <div class="container product-details">
     <div class="row">
         <div class="col-md-6">
-            <a href="@Model.ImageUrl" data-lightbox="product-images">
-                <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid product-image">
+            <a href="#" data-lightbox="product-images">
+                @if (Model?.ImageData != null && Model?.ImageData.Length > 0)
+                {
+                    <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.ImageData)" alt="Product Image" class="w-100" />
+                }
+                else
+                {
+                    <p>No image available</p>
+                }
             </a>
         </div>
         <div class="col-md-6">
@@ -22,9 +29,9 @@
                         <div class="d-flex gap-2 w-50">
                             <input type="number" id="quantity" name="quantity" class="form-control w-25" value="1" min="1" max="@Model.StockQuantity" />
                             <button type="submit" class="btn btn-primary ml-2">Add to Cart</button>
-                            <a asp-action="Buy" asp-controller="Cart" asp-route-productId="@Model.ProductId" class="btn btn-success">Buy</a>
+                            <a asp-action="Buy" asp-controller="Cart" asp-route-productId="@Model.Id" class="btn btn-success">Buy</a>
                         </div>
-                        <input type="hidden" name="productId" value="@Model.ProductId" />
+                        <input type="hidden" name="productId" value="@Model.Id" />
                     </div>
                 </form>
             </div>

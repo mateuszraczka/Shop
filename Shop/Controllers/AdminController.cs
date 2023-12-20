@@ -5,112 +5,47 @@ namespace Shop
 {
     public class AdminController : Controller
     {
-        private readonly IProductServices _productService;
+        private readonly IProductServices _productServices;
+        private readonly IWebHostEnvironment _environment;
 
-        public AdminController(IProductServices productServices)
+
+        public AdminController(IProductServices productServices, IWebHostEnvironment environment)
         {
-            _productService = productServices;
+            _productServices = productServices;
+            _environment = environment;
         }
 
         // GET: AdminController
         public ActionResult Index()
         {
-            List<Product> products = new();
+            List<Product> products = _productServices.GetProducts();
 
-            try
+            if (TempData.ContainsKey("DeleteConfirmation"))
             {
-                products = _productService.GetProducts();
-                string deleteConfirmationMessage;
-
-                //After deleting show message
-                if (TempData.ContainsKey("DeleteConfirmation"))
-                {
-                    deleteConfirmationMessage = TempData["DeleteConfirmation"] as string;
-                }
-
-                else
-                {
-                    throw new Exception("There was no 'DeleteConfirmation' key found in TempData");
-                }
-
-                ViewBag.DeleteConfirmation = deleteConfirmationMessage;
+                var deleteConfirmation = TempData["DeleteConfirmation"];
+                ViewBag.DeleteConfirmation = deleteConfirmation;
             }
-            catch (Exception e) 
-            {
-                Console.WriteLine(e);
-            }
-           
 
             return View(products);
-        }
-
-        // GET: AdminController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: AdminController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: AdminController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: AdminController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: AdminController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: AdminController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
         }
 
         // POST: AdminController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(int id)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+           bool deletionSuccessful = _productServices.DeleteProduct(id);
+
+           if (deletionSuccessful)
+           {
+                TempData["DeleteConfirmation"] = true;
+           }
+           else
+           {
+                TempData["DeleteConfirmation"] = false;
+           }
+
+            return RedirectToAction("Index");
         }
     }
 }

@@ -7,27 +7,17 @@ namespace Shop
     public class HomeController : Controller
     {
         private readonly IProductFetchService _productFetchService;
-        private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger, IProductFetchService productFetchService)
+        public HomeController(IProductFetchService productFetchService)
         {
             _productFetchService = productFetchService;
-            _logger = logger;
         }
 
         public IActionResult Index()
         {
             List<Product> products;
 
-            try
-            {
-                products = _productFetchService.GetProducts();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return NotFound();
-            }
+            products = _productFetchService.GetProducts();
 
             return View(products);
         }

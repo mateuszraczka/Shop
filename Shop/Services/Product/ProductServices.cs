@@ -21,30 +21,21 @@ namespace Shop
             _createService = createService;
         }
 
-        public List<Product> GetProducts()
-        {
-            return _fetchService.GetProducts();
-        }
+        public List<Product> GetProducts() =>
+            _fetchService.GetProducts();
 
-        public Product GetProductById(int productId)
-        {
-            return _fetchService.GetProductById(productId);
-        }
+        public Product GetProductById(int productId) =>
+            _fetchService.GetProductById(productId);
 
-        public bool DeleteProduct(int productId)
-        {
-            return _deleteService.DeleteProduct(productId);
-        }
+        public bool DeleteProduct(int productId) => 
+            _deleteService.DeleteProduct(productId);
 
-        public bool EditProduct(int productId, Product updatedProduct)
-        {
-            return _editService.EditProduct(productId, updatedProduct);
-        }
+        public bool EditProduct(int productId, Product updatedProduct) =>
+            _editService.EditProduct(productId, updatedProduct);
+      
 
-        public bool CreateProduct(Product product)
-        {
-            return _createService.CreateProduct(product);
-        }
+        public bool CreateProduct(Product product) =>
+            _createService.CreateProduct(product);
     }
 
 }

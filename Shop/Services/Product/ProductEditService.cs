@@ -1,14 +1,18 @@
 ﻿using Shop.Models;
+using Shop.Models.Contexts;
 
 namespace Shop
 {
     public class ProductEditService : IProductEditService
     {
         private readonly IProductFetchService _productGetService;
+        private readonly ProductsDbContext _context;
 
-        public ProductEditService(IProductFetchService productGetService)
+
+        public ProductEditService(IProductFetchService productGetService, ProductsDbContext context)
         {
             _productGetService = productGetService;
+            _context = context;
         }
 
         public bool EditProduct(int productId, Product editedProduct)
@@ -26,16 +30,24 @@ namespace Shop
                 product.Price = editedProduct.Price;
                 product.Name = editedProduct.Name;
                 product.Description = editedProduct.Description;
-                product.ImageUrl = editedProduct.ImageUrl;
+                product.ImageData = editedProduct.ImageData;
+                product.ImageFile = editedProduct.ImageFile;
                 product.CategoryId = editedProduct.CategoryId;
+                
+                using (_context)
+                {
+                    _context.Update(product);
+                    _context.SaveChanges();
+                }
 
                 return true;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"EditProduct failed: {ex.Message}");
-                return false;
+                Console.WriteLine($"Edit Product failed: {ex.Message}");
             }
+
+            return false;
         }
     }
 }
