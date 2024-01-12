@@ -1,4 +1,5 @@
-﻿using Shop.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Shop.Models;
 using Shop.Models.Contexts;
 
 namespace Shop
@@ -14,7 +15,7 @@ namespace Shop
 
         public List<Product> GetProducts()
         {
-            List<Product> products = new();
+            List<Product> products = new List<Product>();
 
             try
             {
@@ -45,6 +46,29 @@ namespace Shop
                 Console.WriteLine(ex.Message);
             }
             return product;
+        }
+
+        public List<Product> GetProductsFilteredByName(string name)
+        {
+            List<Product> products = new();
+            try
+            {
+                products = _context.Products
+                 .Where(p => EF.Functions.Like(p.Name, $"%{name.ToLower()}%"))
+                 .ToList();
+
+                if (products == null)
+                {
+                    throw new ArgumentNullException("Products fetch - null error");
+                }
+
+                return products;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return products;
         }
     }
 }

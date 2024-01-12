@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Shop.Models;
+using System.Data;
 
 namespace Shop
 {
@@ -16,6 +18,7 @@ namespace Shop
         }
 
         // GET: AdminController
+        [Authorize(Roles = "Admin")]
         public ActionResult Index()
         {
             List<Product> products = _productServices.GetProducts();
@@ -30,6 +33,7 @@ namespace Shop
         }
 
         // POST: AdminController/Delete/5
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id)

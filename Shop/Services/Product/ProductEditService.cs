@@ -5,13 +5,13 @@ namespace Shop
 {
     public class ProductEditService : IProductEditService
     {
-        private readonly IProductFetchService _productGetService;
+        private readonly IProductFetchService _productFetchService;
         private readonly ProductsDbContext _context;
 
 
-        public ProductEditService(IProductFetchService productGetService, ProductsDbContext context)
+        public ProductEditService(IProductFetchService productFetchService, ProductsDbContext context)
         {
-            _productGetService = productGetService;
+            _productFetchService = productFetchService;
             _context = context;
         }
 
@@ -24,7 +24,7 @@ namespace Shop
                     throw new Exception("Invalid edited product.");
                 }
 
-                Product product = _productGetService.GetProductById(productId);
+                Product product = _productFetchService.GetProductById(productId);
 
                 product.StockQuantity = editedProduct.StockQuantity;
                 product.Price = editedProduct.Price;

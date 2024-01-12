@@ -25,7 +25,7 @@ namespace Shop
             builder.Services.AddScoped<IProductDeleteService, ProductDeleteService>();
             builder.Services.AddScoped<IProductCreateService, ProductCreateService>();
             builder.Services.AddDbContext<ProductsDbContext>(options=> options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection")));
-            builder.Services.AddDefaultIdentity<Admin>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<IdentityDbContext>();
+            builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true).AddRoles<IdentityRole>().AddEntityFrameworkStores<IdentityDbContext>();
             builder.Services.AddDbContext<CategoriesDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection")));
             builder.Services.AddDbContext<OrdersDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection")));
             builder.Services.AddDbContext<IdentityDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection")));

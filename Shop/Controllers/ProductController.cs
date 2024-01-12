@@ -4,6 +4,8 @@ using Shop.Models;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using System.Globalization;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace Shop
 {
@@ -153,6 +155,7 @@ namespace Shop
         }
 
         // POST: ProductController/Create
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Product product, IFormFile imageFile)
@@ -180,6 +183,7 @@ namespace Shop
 
 
         // GET: ProductController/Edit/5
+        [Authorize(Roles = "Admin")]
         public ActionResult Edit(int id)
         {
             Product productToEdit = _productServices.GetProductById(id);
@@ -187,6 +191,7 @@ namespace Shop
         }
 
         // POST: ProductController/Edit/5
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Product product, IFormFile imageFile)

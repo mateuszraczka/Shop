@@ -27,6 +27,9 @@ namespace Shop
         public Product GetProductById(int productId) =>
             _fetchService.GetProductById(productId);
 
+        public List<Product> GetProductsFilteredByName(string productName) =>
+            _fetchService.GetProductsFilteredByName(productName);
+
         public bool DeleteProduct(int productId) => 
             _deleteService.DeleteProduct(productId);
 

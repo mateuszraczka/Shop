@@ -13,13 +13,21 @@ namespace Shop
             _productFetchService = productFetchService;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
-            List<Product> products;
-
-            products = _productFetchService.GetProducts();
+            List<Product> products = _productFetchService.GetProducts();
 
             return View(products);
+        }
+
+        
+        [HttpGet]
+        public IActionResult Filter(string productName)
+        {
+            List<Product> products = _productFetchService.GetProductsFilteredByName(productName); 
+            
+            return View("Index",products);
         }
 
         public IActionResult Privacy()

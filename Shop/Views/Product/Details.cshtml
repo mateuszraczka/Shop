@@ -7,16 +7,17 @@
 <div class="container product-details">
     <div class="row">
         <div class="col-md-6">
-            <a href="#" data-lightbox="product-images">
-                @if (Model?.ImageData != null && Model?.ImageData.Length > 0)
-                {
+            @if (Model?.ImageData != null && Model?.ImageData.Length > 0)
+            {
+                <a href="data:image/jpeg;base64,@Convert.ToBase64String(Model.ImageData)" data-lightbox="product-images">
                     <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.ImageData)" alt="Product Image" class="w-100" />
-                }
-                else
-                {
-                    <p>No image available</p>
-                }
-            </a>
+                </a>
+            }
+            else
+            {
+                <p>No image available</p>
+            }
+            
         </div>
         <div class="col-md-6">
             <h1 class="product-name">@Model.Name</h1>
