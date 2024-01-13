@@ -4,13 +4,13 @@ Users do not have access to admin panel.
 
 Test accounts:
 
-User
-login: test@test.com 
+User /
+login: test@test.com / 
 password: Test1!
 
-Admin
-login: admin@admin.com
-password: Admin1!
+Admin /
+login: admin@admin.com /
+password: Admin1! 
 
 1. Change this connection string in appsettings.json:
    
@@ -28,7 +28,7 @@ password: Admin1!
 
 3. To create migration execute nuget commands below:
 
-Update-Database -Context CategoriesDbContext
-Update-Databse -Context IdentityDbContext
-Update-Database -Context OrdersDbContext
-Update-Database -Context ProductsDbContext
+- Update-Database -Context CategoriesDbContext
+- Update-Databse -Context IdentityDbContext
+- Update-Database -Context OrdersDbContext
+- Update-Database -Context ProductsDbContext
